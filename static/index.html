@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Neverleafs Chatbot</title>
+  <!-- Import Google Fonts for a modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* --- Global Styles --- */
+    :root {
+      --primary-color: #2C3E50;
+      --secondary-color: #ECF0F1;
+      --accent-color: #3498DB;
+      --btn-hover: #2980B9;
+      --card-bg: #FFFFFF;
+      --font-family: 'Roboto', sans-serif;
+      --shadow: rgba(0, 0, 0, 0.15);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-family);
+      background: var(--secondary-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    /* Card Container for SPA */
+    .card-container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px var(--shadow);
+    }
+    
+    /* Header Section */
+    .card-header {
+      background: linear-gradient(135deg, var(--secondary-color), #ffffff);
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .card-header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: var(--primary-color);
+    }
+    
+    .welcome-message {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      opacity: 0.85;
+    }
+    
+    /* Navigation Buttons */
+    #button-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .nav-button {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .nav-button:hover {
+      background-color: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+    
+    /* Search Bar */
+    .search-container {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      width: 300px;
+      padding: 12px 45px 12px 15px;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      background-color: var(--secondary-color);
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .search-input:hover {
+      border-color: var(--accent-color);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 1.2rem;
+      color: var(--primary-color);
+    }
+    
+    /* Dynamic Content Section */
+    #content {
+      padding: 25px;
+    }
+    
+    /* --- Chat Interface Styles --- */
+    .chat-window {
+      height: 350px;
+      overflow-y: auto;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+      padding: 15px;
+      background: var(--secondary-color);
+      margin-bottom: 15px;
+    }
+    
+    .chat-message {
+      margin: 10px 0;
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .chat-message p {
+      margin: 0;
+      padding: 12px 15px;
+      border-radius: 20px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+    
+    .user-message p {
+      background-color: var(--accent-color);
+      color: var(--secondary-color);
+      align-self: flex-end;
+    }
+    
+    .bot-message p {
+      background-color: #BDC3C7;
+      color: var(--primary-color);
+      align-self: flex-start;
+    }
+    
+    #chat-input-area {
+      display: flex;
+      gap: 10px;
+    }
+    
+    #chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      font-size: 1rem;
+    }
+    
+    #chat-send-button,
+    #exit-chat-button {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    #chat-send-button:hover,
+    #exit-chat-button:hover {
+      background-color: var(--btn-hover);
+    }
+    
+    /* --- Products View Styles --- */
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: var(--accent-color);
+      color: var(--secondary-color);
+      border-radius: 30px;
+      transition: background-color 0.3s;
+    }
+    
+    .back-btn:hover {
+      background: var(--btn-hover);
+    }
+    
+    .category-select {
+      margin-bottom: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .category-select label {
+      font-size: 1rem;
+      color: var(--primary-color);
+    }
+    
+    /* Carousel Styles for Product Cards */
+    .carousel-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 10px;
+    }
+    
+    .carousel-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .carousel-container::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 4px;
+    }
+    
+    /* Product Card */
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 240px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .product-card img {
+      width: 100%;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      object-fit: cover;
+      height: 160px;
+    }
+    
+    .product-info {
+      padding: 10px;
+      flex-grow: 1;
+    }
+    
+    .product-info h3 {
+      margin: 5px 0;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+    }
+    
+    .product-info p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .actions {
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #eee;
+    }
+    
+    .actions button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+    }
+    
+    .add-btn {
+      background: #27AE60;
+      color: var(--secondary-color);
+    }
+    
+    .add-btn:hover {
+      background: #1E8449;
+    }
+    
+    .remove-btn {
+      background: #C0392B;
+      color: var(--secondary-color);
+    }
+    
+    .remove-btn:hover {
+      background: #922B21;
+    }
+    
+    /* --- Maintenance Buttons Styling --- */
+    .maintenance-btn {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    .maintenance-btn:hover {
+      background-color: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+    
+    /* --- Plant-Specific Maintenance Input Styling --- */
+    .maintenance-input {
+      width: 300px;
+      padding: 12px 15px;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .maintenance-input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    
+    /* --- Find Plant Module Styling --- */
+    .find-plant-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+    
+    .find-plant-form input {
+      padding: 12px 15px;
+      border: 2px solid var(--primary-color);
+      border-radius: 30px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    
+    .find-plant-form input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    
+    .find-plant-btn {
+      background-color: var(--primary-color);
+      color: var(--secondary-color);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      width: 200px;
+      align-self: center;
+    }
+    
+    .find-plant-btn:hover {
+      background-color: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+    
+    .find-plant-results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    /* Plant Card (Find Plant) */
+    .plant-card {
+      background: var(--card-bg);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      width: 220px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+    
+    .plant-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .plant-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    
+    .plant-info {
+      padding: 10px;
+    }
+    
+    .plant-info h3 {
+      margin: 5px 0;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Unified Card Container -->
+  <div class="card-container">
+    <!-- Header Section (Navigation and Welcome) -->
+    <header class="card-header">
+      <h1>Neverleafs Chatbot</h1>
+      <p class="welcome-message">
+        Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.
+      </p>
+      <!-- Navigation Buttons -->
+      <nav id="button-container">
+        <button class="nav-button" onclick="loadView('products')">Bekijk Producten</button>
+        <button class="nav-button" onclick="loadView('findPlant')">Vind de Perfecte Plant</button>
+        <button class="nav-button" onclick="loadView('maintenance')">Leer Onderhoud</button>
+        <button class="nav-button" onclick="loadView('checkOrderStatus')">Controleer Bestelstatus</button>
+      </nav>
+      <!-- Search Bar (for QA chat) -->
+      <div class="search-container" onclick="loadView('qa')">
+        <input type="text" class="search-input" placeholder="Vraag me iets..." readonly>
+        <span class="search-icon">&#128269;</span>
+      </div>
+    </header>
+    <!-- Dynamic Content Section -->
+    <main id="content">
+      <p>Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.</p>
+    </main>
+  </div>
+  
+  <script>
+    // Set the API base URL to your FastAPI backend
+    const API_BASE = 'http://127.0.0.1:8000';
+    
+    // Define view templates for the SPA
+    const views = {
+      home: `<p>Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.</p>`,
+      
+      // Products view – now using buttons for categories with dynamic translation
+      products: `
+        <header>
+          <h1>Bekijk Producten</h1>
+          <a href="#" class="back-btn" onclick="loadView('home')">Terug naar Home</a>
+        </header>
+        <div class="category-select">
+          <label>Kies een categorie:</label>
+          <div id="category-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+        </div>
+        <div id="productsCarousel" class="carousel-container">
+          <!-- Product cards will be injected here -->
+        </div>
+        <div id="message"></div>
+      `,
+      
+      // Find Perfect Plant view
+      findPlant: `
+        <header>
+          <h1>Vind de Perfecte Plant</h1>
+          <a href="#" class="back-btn" onclick="loadView('home')">Terug naar Home</a>
+        </header>
+        <div class="find-plant-form">
+          <input type="text" id="fp-location" placeholder="Gewenste locatie (bijv. kantoor, binnen, buiten)">
+          <input type="text" id="fp-size" placeholder="Gewenste grootte (klein, medium, groot)">
+          <input type="text" id="fp-style" placeholder="Gewenste stijl (modern, minimalistisch, tropisch)">
+          <button class="find-plant-btn" onclick="findPlant()">Vind mijn perfecte plant</button>
+        </div>
+        <div id="find-plant-results" class="find-plant-results"></div>
+      `,
+      
+      // Maintenance view remains with buttons for general topics and a styled plant input
+      maintenance: `
+        <h2>Onderhoudstips</h2>
+        <div style="margin-bottom:20px;">
+          <h3>Algemene Onderhoudstip</h3>
+          <div id="maintenance-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="maintenance-btn" data-topic="cleaning">Schoonmaken</button>
+            <button class="maintenance-btn" data-topic="uv_protection">UV Bescherming</button>
+            <button class="maintenance-btn" data-topic="sustainability">Duurzaamheid</button>
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3>Plant-specifiek Onderhoud</h3>
+          <input type="text" id="plant-name" class="maintenance-input" placeholder="Voer plantnaam in">
+          <button id="get-plant-maintenance">Haal Onderhoudstip op</button>
+        </div>
+        <div id="maintenance-result" style="margin-top:20px;"></div>
+        <button class="back-btn" onclick="loadView('home')">Terug naar Home</button>
+      `,
+      
+      checkOrderStatus: `<h2>Controleer Bestelstatus</h2><p>Deze module is in aanbouw.</p>`,
+      
+      // QA view: Chat interface
+      qa: `
+        <h2>Plantenexpert Chat</h2>
+        <div class="chat-window" id="chat-window">
+          <div class="chat-message bot-message">
+            <p><span class="icon">🤖</span> Hallo! Hoe kan ik je helpen met planten van Neverleafs?</p>
+          </div>
+        </div>
+        <div id="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Typ je vraag...">
+          <button id="chat-send-button" onclick="sendMessage()">Verstuur</button>
+        </div>
+        <button id="exit-chat-button" onclick="exitConversation()">Verlaat gesprek</button>
+      `
+    };
+    
+    // Load a view into the #content area
+    function loadView(viewName) {
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = views[viewName] || `<p>View niet gevonden.</p>`;
+      
+      // Show or hide navigation buttons in the header based on view
+      if (viewName === 'qa') {
+        document.getElementById('button-container').style.display = 'none';
+        // Attach keypress event for Enter on chat input after a brief delay
+        setTimeout(() => {
+          const chatInput = document.getElementById('chat-input');
+          if (chatInput) {
+            chatInput.addEventListener('keypress', function(e) {
+              if (e.key === 'Enter') sendMessage();
+            });
+          }
+        }, 0);
+      } else {
+        document.getElementById('button-container').style.display = 'flex';
+      }
+      
+      // Initialize products view if selected
+      if (viewName === 'products') {
+        initProductsView();
+      }
+      
+      // Initialize maintenance view if selected
+      if (viewName === 'maintenance') {
+        initMaintenanceView();
+      }
+    }
+    
+    // Initialize the products view: fetch categories and set up category buttons
+    function initProductsView() {
+      // Mapping of English category names to Dutch
+      const categoryMapping = {
+        "flowers": "Bloemen",
+        "succulents": "Vetplanten",
+        "trees": "Bomen",
+        "indoor": "Binnen",
+        "office": "Kantoor",
+        "outdoors": "Buiten"
+        // Add more mappings as needed
+      };
+
+      fetch(`${API_BASE}/products/categories`)
+        .then(res => res.json())
+        .then(data => {
+          const categoryButtonsDiv = document.getElementById('category-buttons');
+          categoryButtonsDiv.innerHTML = ''; // Clear any existing content
+          data.categories.forEach(cat => {
+            // Translate the category name if a mapping exists, otherwise use the original
+            const translatedCat = categoryMapping[cat.toLowerCase()] || cat;
+            const btn = document.createElement('button');
+            btn.className = 'nav-button';
+            btn.textContent = translatedCat;
+            btn.setAttribute('data-category', cat);
+            btn.addEventListener('click', () => {
+              fetch(`${API_BASE}/products/list?category=${encodeURIComponent(cat)}`)
+                .then(res => res.json())
+                .then(data => displayProducts(data.products))
+                .catch(error => console.error('Fout bij het ophalen van producten:', error));
+            });
+            categoryButtonsDiv.appendChild(btn);
+          });
+        })
+        .catch(error => console.error('Fout bij het ophalen van categorieën:', error));
+    }
+    
+    // Display products in the carousel container
+    function displayProducts(products) {
+      const carousel = document.getElementById('productsCarousel');
+      carousel.innerHTML = ''; // Clear previous products
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <p><strong>Prijs:</strong> ${product.price}</p>
+            <p><strong>Voorraad:</strong> ${product.stock}</p>
+            <p><strong>Hoogte:</strong> ${product.height}</p>
+          </div>
+          <div class="actions">
+            <button class="add-btn" data-id="${product.id}">Voeg toe aan winkelwagen</button>
+            <button class="remove-btn" data-id="${product.id}" style="display: none;">Verwijder</button>
+          </div>
+        `;
+        carousel.appendChild(card);
+      });
+      attachCartActions();
+    }
+    
+    // Attach event listeners for Add to Cart and Remove buttons
+    function attachCartActions() {
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const productId = e.target.getAttribute('data-id');
+          try {
+            const res = await fetch(`${API_BASE}/cart/add`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ product_id: parseInt(productId), quantity: 1 })
+            });
+            const data = await res.json();
+            showMessage(data.message);
+            // Toggle the buttons
+            e.target.style.display = 'none';
+            e.target.parentElement.querySelector('.remove-btn').style.display = 'inline-block';
+          } catch (error) {
+            console.error('Fout bij toevoegen aan winkelwagen:', error);
+            showMessage('Fout bij toevoegen aan winkelwagen.');
+          }
+        });
+      });
+    
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const productId = e.target.getAttribute('data-id');
+          try {
+            const res = await fetch(`${API_BASE}/cart/remove`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ product_id: parseInt(productId) })
+            });
+            const data = await res.json();
+            showMessage(data.message);
+            // Toggle the buttons
+            e.target.style.display = 'none';
+            e.target.parentElement.querySelector('.add-btn').style.display = 'inline-block';
+          } catch (error) {
+            console.error('Fout bij verwijderen uit winkelwagen:', error);
+            showMessage('Fout bij verwijderen uit winkelwagen.');
+          }
+        });
+      });
+    }
+    
+    // Display a temporary message (for cart actions)
+    function showMessage(msg) {
+      const msgDiv = document.getElementById('message');
+      msgDiv.textContent = msg;
+      setTimeout(() => {
+        msgDiv.textContent = '';
+      }, 3000);
+    }
+    
+    /* --- Chat Interface Functions --- */
+    function appendChatMessage(sender, text) {
+      const chatWindow = document.getElementById('chat-window');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
+      const icon = sender === 'user' ? '🧑' : '🤖';
+      messageDiv.innerHTML = `<p><span class="icon">${icon}</span> ${text}</p>`;
+      chatWindow.appendChild(messageDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+    
+    async function sendMessage() {
+      const inputField = document.getElementById('chat-input');
+      const question = inputField.value.trim();
+      if (!question) return;
+      
+      appendChatMessage('user', question);
+      inputField.value = '';
+      
+      try {
+        const response = await fetch(`${API_BASE}/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: question })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          appendChatMessage('bot', data.response);
+        } else {
+          appendChatMessage('bot', 'Oeps, er is iets misgegaan!');
+        }
+      } catch (error) {
+        console.error('Fout:', error);
+        appendChatMessage('bot', 'Netwerkfout, probeer het later opnieuw.');
+      }
+    }
+    
+    function exitConversation() {
+      loadView('home');
+    }
+    
+    // Initialize Maintenance View: attach event listeners for tip lookups
+    function initMaintenanceView() {
+      // Attach event listeners to each maintenance topic button
+      document.querySelectorAll('#maintenance-buttons .maintenance-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const topic = btn.getAttribute('data-topic');
+          fetch(`${API_BASE}/maintenance/${topic}`)
+            .then(res => res.json())
+            .then(data => {
+              document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+            })
+            .catch(error => {
+              console.error('Fout bij ophalen onderhoudstip:', error);
+              document.getElementById('maintenance-result').innerHTML = `<p>Fout bij ophalen tip.</p>`;
+            });
+        });
+      });
+      
+      // Plant-specific maintenance lookup
+      const plantBtn = document.getElementById('get-plant-maintenance');
+      if (plantBtn) {
+        plantBtn.addEventListener('click', () => {
+          const plantName = document.getElementById('plant-name').value.trim();
+          if (!plantName) {
+            alert('Vul alstublieft een plantnaam in.');
+            return;
+          }
+          fetch(`${API_BASE}/maintenance/plant/${plantName}`)
+            .then(res => res.json())
+            .then(data => {
+              document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+            })
+            .catch(error => {
+              console.error('Fout bij ophalen plantonderhoudstip:', error);
+              document.getElementById('maintenance-result').innerHTML = `<p>Fout bij ophalen tip.</p>`;
+            });
+        });
+      }
+    }
+    
+    // Find Perfect Plant Functionality: gathers user inputs and calls the API
+    function findPlant() {
+      const location = document.getElementById('fp-location').value.trim();
+      const size = document.getElementById('fp-size').value.trim();
+      const style = document.getElementById('fp-style').value.trim();
+      
+      if (!location || !size || !style) {
+        alert('Vul alstublieft alle velden in met uw voorkeuren.');
+        return;
+      }
+      
+      fetch(`${API_BASE}/find_plant`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ location, size, style })
+      })
+      .then(res => res.json())
+      .then(data => {
+        displayPlantResults(data);
+      })
+      .catch(error => {
+        console.error('Fout bij zoeken naar plant:', error);
+        document.getElementById('find-plant-results').innerHTML = `<p>Fout bij zoeken naar plant.</p>`;
+      });
+    }
+    
+    // Display the plant matching results in the find plant module
+    function displayPlantResults(plants) {
+      const resultsDiv = document.getElementById('find-plant-results');
+      resultsDiv.innerHTML = '';
+      
+      // If there's a message (no match found) return it.
+      if (plants.length === 0 || (plants[0] && plants[0].message)) {
+        resultsDiv.innerHTML = `<p>${plants[0].message || 'Geen overeenkomsten gevonden.'}</p>`;
+        return;
+      }
+      
+      plants.forEach(plant => {
+        const card = document.createElement('div');
+        card.className = 'plant-card';
+        // Prepend the BASE_IMAGE_URL to the plant image name
+        const imageUrl = `${API_BASE}/static/images/${plant.image}`;
+        card.innerHTML = `
+          <img src="${imageUrl}" alt="${plant.name}">
+          <div class="plant-info">
+            <h3>${plant.name}</h3>
+            <p><strong>Locatie:</strong> ${plant.location}</p>
+            <p><strong>Grootte:</strong> ${plant.size}</p>
+            <p><strong>Stijl:</strong> ${plant.style}</p>
+          </div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+    
+    // On page load, default to the home view
+    document.addEventListener('DOMContentLoaded', () => {
+      loadView('home');
+    });
+  </script>
+</body>
+</html>
+
