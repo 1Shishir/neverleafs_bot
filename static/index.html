@@ -3,145 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <title>Neverleafs Chatbot</title>
-  <!-- Import Google Fonts for a modern look -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Import Montserrat from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* --- Global Styles --- */
+    /* --- Color Variables --- */
     :root {
-      --primary-color: #2C3E50;
-      --secondary-color: #ECF0F1;
-      --accent-color: #3498DB;
-      --btn-hover: #2980B9;
-      --card-bg: #FFFFFF;
-      --font-family: 'Roboto', sans-serif;
+      --chat-bg: #fdfaef;           /* Chatbot background (light) */
+      --border-color: #40442e;       /* Global/darker color for borders and headings */
+      --header-bg: #40442e;          /* Header background (dark) */
+      --header-text: #fdfaef;        /* Header text (light) */
+      /* Button colors */
+      --button-bg: #fdfaef;          /* Normal button background (light) */
+      --button-text: #40442e;        /* Normal button text (dark) */
+      --button-border: #40442e;      /* Normal button border (dark) */
+      /* Hover colors (inverted) */
+      --button-hover-bg: #40442e;     /* Button hover background (dark) */
+      --button-hover-text: #fdfaef;   /* Button hover text (light) */
+      --button-hover-border: #fdfaef; /* Button hover border (light) */
+      /* Input fields */
+      --input-bg: #fdfaef;
+      --input-border: #40442e;
       --shadow: rgba(0, 0, 0, 0.15);
+      --font-family: 'Montserrat', sans-serif;
     }
     
+    /* --- Global Reset & Base Font Size --- */
     * {
       box-sizing: border-box;
     }
-    
-    body {
-      font-family: var(--font-family);
-      background: var(--secondary-color);
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      font-family: var(--font-family);
+      font-size: 1rem; /* Increased global font size */
+      background: var(--chat-bg);
     }
     
-    /* Card Container for SPA */
-    .card-container {
-      width: 100%;
-      max-width: 800px;
-      background: var(--card-bg);
+    /* --- Chat Container --- */
+    .chat-container {
+      width: 70vw;
+      height: 86vh; /* Increased by 20% from previous 72vh */
+      margin: 5vh 15vw;
+      display: flex;
+      flex-direction: column;
+      background: var(--chat-bg);
+      border: 1px solid var(--border-color);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 8px 20px var(--shadow);
     }
     
-    /* Header Section */
-    .card-header {
-      background: linear-gradient(135deg, var(--secondary-color), #ffffff);
-      padding: 30px 20px;
+    /* --- Header (Reduced Padding) --- */
+    .chat-header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 10px; /* Reduced from 15px */
       text-align: center;
-      border-bottom: 2px solid var(--primary-color);
+      flex: 0 0 auto;
     }
     
-    .card-header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      color: var(--primary-color);
+    /* --- Chat Window --- */
+    .chat-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background: var(--chat-bg);
     }
     
-    .welcome-message {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      color: var(--primary-color);
-      opacity: 0.85;
+    /* --- Module Container (hidden by default) --- */
+    .module-container {
+      display: none;
+      width: 90%;
+      margin: 10px auto;
+      padding: 15px;
+      background: var(--chat-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      max-height: 64vh; /* Increased by 20% from previous 53vh */
+      overflow-y: auto;
     }
     
-    /* Navigation Buttons */
-    #button-container {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 20px 0;
+    /* Ensure all headings in modules use the darker color */
+    .module-container h1,
+    .module-container h2,
+    .module-container h3 {
+      color: var(--border-color);
     }
     
-    .nav-button {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
+    /* General paragraph rule for modules */
+    .module-container p {
+      white-space: normal;
+      word-break: break-word;
+    }
+    
+    /* --- Footer --- */
+    .chat-footer {
+      background: var(--chat-bg);
+      padding: 10px;
+      flex: 0 0 auto;
+    }
+    
+    /* --- Button Styles --- */
+    button {
+      border: 2px solid var(--button-border);
+      border-radius: 10px;
       padding: 12px 25px;
-      border-radius: 30px;
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      transition: background-color 0.3s, color 0.3s, border 0.3s, transform 0.2s;
     }
-    
-    .nav-button:hover {
-      background-color: var(--btn-hover);
+    button:hover {
+      background-color: var(--button-hover-bg);
+      color: var(--button-hover-text);
+      border: 2px solid var(--button-hover-border);
       transform: translateY(-2px);
     }
     
-    /* Search Bar */
-    .search-container {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-      margin-bottom: 20px;
+    .module-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     
-    .search-input {
-      width: 300px;
-      padding: 12px 45px 12px 15px;
-      border: 2px solid var(--primary-color);
+    /* --- Input Fields --- */
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid var(--input-border);
       border-radius: 30px;
-      background-color: var(--secondary-color);
       font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--input-border);
       transition: border-color 0.3s;
     }
-    
-    .search-input:hover {
-      border-color: var(--accent-color);
+    /* For inputs inside modules, use fit-content */
+    .module-container input[type="text"] {
+      display: inline-block;
+      width: -moz-fit-content;
+      width: -webkit-fit-content;
+      width: fit-content;
+    }
+    /* Specifically for the Find Perfect Plant module, override to a fixed 400px */
+    .find-plant-form input[type="text"] {
+      width: 400px;
+    }
+    input[type="text"]:focus {
+      border-color: var(--input-border);
+      outline: none;
     }
     
-    .search-icon {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      font-size: 1.2rem;
-      color: var(--primary-color);
+    /* --- Chat Input Area --- */
+    .chat-input-area {
+      display: flex;
+      gap: 10px;
+    }
+    #chat-input {
+      flex: 1;
     }
     
-    /* Dynamic Content Section */
-    #content {
-      padding: 25px;
-    }
-    
-    /* --- Chat Interface Styles --- */
-    .chat-window {
-      height: 350px;
-      overflow-y: auto;
-      border: 2px solid var(--primary-color);
-      border-radius: 8px;
-      padding: 15px;
-      background: var(--secondary-color);
-      margin-bottom: 15px;
-    }
-    
+    /* --- Chat Message Styles --- */
     .chat-message {
       margin: 10px 0;
       display: flex;
       align-items: flex-start;
     }
-    
     .chat-message p {
       margin: 0;
       padding: 12px 15px;
@@ -149,97 +178,58 @@
       max-width: 80%;
       line-height: 1.4;
     }
-    
+    .bot-message p {
+      background-color: #BDC3C7;
+      color: var(--border-color);
+      align-self: flex-start;
+    }
+    .user-message {
+      margin-left: auto;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+    }
     .user-message p {
-      background-color: var(--accent-color);
-      color: var(--secondary-color);
+      background-color: var(--header-bg);
+      color: var(--header-text);
       align-self: flex-end;
     }
     
-    .bot-message p {
-      background-color: #BDC3C7;
-      color: var(--primary-color);
-      align-self: flex-start;
-    }
-    
-    #chat-input-area {
-      display: flex;
-      gap: 10px;
-    }
-    
-    #chat-input {
-      flex: 1;
-      padding: 12px;
-      border: 2px solid var(--primary-color);
-      border-radius: 30px;
-      font-size: 1rem;
-    }
-    
-    #chat-send-button,
-    #exit-chat-button {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      padding: 12px 20px;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    
-    #chat-send-button:hover,
-    #exit-chat-button:hover {
-      background-color: var(--btn-hover);
-    }
-    
-    /* --- Products View Styles --- */
-    .back-btn {
-      display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      padding: 10px 20px;
-      background: var(--accent-color);
-      color: var(--secondary-color);
-      border-radius: 30px;
-      transition: background-color 0.3s;
-    }
-    
-    .back-btn:hover {
-      background: var(--btn-hover);
-    }
-    
+    /* --- Module-Specific Styles --- */
+    /* Browse (Products) view */
     .category-select {
       margin-bottom: 25px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-    
     .category-select label {
       font-size: 1rem;
-      color: var(--primary-color);
+      color: var(--border-color);
     }
-    
-    /* Carousel Styles for Product Cards */
+    .browse-desc {
+      margin-bottom: 15px;
+      color: var(--border-color);
+    }
+    /* Carousel container now scrolls horizontally in a single line */
     .carousel-container {
       display: flex;
       overflow-x: auto;
       gap: 20px;
       padding-bottom: 10px;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
     }
-    
     .carousel-container::-webkit-scrollbar {
       height: 8px;
     }
-    
     .carousel-container::-webkit-scrollbar-thumb {
-      background: var(--primary-color);
+      background: var(--border-color);
       border-radius: 4px;
     }
-    
-    /* Product Card */
     .product-card {
-      background: var(--card-bg);
-      border: 1px solid #ddd;
+      background: var(--chat-bg);
+      border: 1px solid var(--border-color);
       border-radius: 10px;
       width: 240px;
       flex-shrink: 0;
@@ -248,142 +238,54 @@
       flex-direction: column;
       transition: transform 0.2s;
     }
-    
     .product-card:hover {
       transform: translateY(-4px);
     }
-    
     .product-card img {
       width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
-      object-fit: cover;
-      height: 160px;
     }
-    
     .product-info {
       padding: 10px;
       flex-grow: 1;
+      color: var(--border-color);
+      white-space: normal;
+      word-break: break-word;
     }
-    
     .product-info h3 {
       margin: 5px 0;
       font-size: 1.1rem;
-      color: var(--primary-color);
+      white-space: normal;
+      word-break: break-word;
     }
-    
     .product-info p {
       margin: 4px 0;
       font-size: 0.9rem;
-      color: #555;
+      white-space: normal;
+      word-break: break-word;
     }
-    
     .actions {
       padding: 10px;
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--border-color);
     }
     
-    .actions button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background-color 0.3s;
-    }
-    
-    .add-btn {
-      background: #27AE60;
-      color: var(--secondary-color);
-    }
-    
-    .add-btn:hover {
-      background: #1E8449;
-    }
-    
-    .remove-btn {
-      background: #C0392B;
-      color: var(--secondary-color);
-    }
-    
-    .remove-btn:hover {
-      background: #922B21;
-    }
-    
-    /* --- Maintenance Buttons Styling --- */
-    .maintenance-btn {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    
-    .maintenance-btn:hover {
-      background-color: var(--btn-hover);
-      transform: translateY(-2px);
-    }
-    
-    /* --- Plant-Specific Maintenance Input Styling --- */
-    .maintenance-input {
-      width: 300px;
-      padding: 12px 15px;
-      border: 2px solid var(--primary-color);
-      border-radius: 30px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-    
-    .maintenance-input:focus {
-      border-color: var(--accent-color);
-      outline: none;
-    }
-    
-    /* --- Find Plant Module Styling --- */
+    /* Find Perfect Plant view */
     .find-plant-form {
+      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 15px;
-      max-width: 400px;
       margin-bottom: 20px;
     }
-    
-    .find-plant-form input {
-      padding: 12px 15px;
-      border: 2px solid var(--primary-color);
-      border-radius: 30px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
+    .findplant-desc {
+      margin-bottom: 15px;
+      color: var(--border-color);
     }
-    
-    .find-plant-form input:focus {
-      border-color: var(--accent-color);
-      outline: none;
-    }
-    
-    .find-plant-btn {
-      background-color: var(--primary-color);
-      color: var(--secondary-color);
-      border: none;
-      padding: 12px 20px;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-      width: 200px;
-      align-self: center;
-    }
-    
-    .find-plant-btn:hover {
-      background-color: var(--btn-hover);
-      transform: translateY(-2px);
-    }
-    
     .find-plant-results {
       display: flex;
       flex-wrap: wrap;
@@ -391,11 +293,9 @@
       justify-content: center;
       margin-top: 20px;
     }
-    
-    /* Plant Card (Find Plant) */
     .plant-card {
-      background: var(--card-bg);
-      border: 1px solid #ddd;
+      background: var(--chat-bg);
+      border: 1px solid var(--border-color);
       border-radius: 10px;
       width: 220px;
       flex-shrink: 0;
@@ -406,11 +306,9 @@
       text-align: center;
       padding-bottom: 10px;
     }
-    
     .plant-card:hover {
       transform: translateY(-4px);
     }
-    
     .plant-card img {
       width: 100%;
       height: 150px;
@@ -418,60 +316,77 @@
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
-    
     .plant-info {
       padding: 10px;
+      color: var(--border-color);
     }
-    
     .plant-info h3 {
       margin: 5px 0;
       font-size: 1.1rem;
-      color: var(--primary-color);
+    }
+    
+    /* Maintenance view */
+    .maintenance-input {
+      width: 300px;
+      padding: 12px 15px;
+      border: 2px solid var(--input-border);
+      border-radius: 30px;
+      font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--border-color);
+      transition: border-color 0.3s;
+    }
+    .maintenance-input:focus {
+      border-color: var(--input-border);
+      outline: none;
     }
   </style>
 </head>
 <body>
-  <!-- Unified Card Container -->
-  <div class="card-container">
-    <!-- Header Section (Navigation and Welcome) -->
-    <header class="card-header">
+  <div class="chat-container">
+    <!-- Header -->
+    <header class="chat-header">
       <h1>Neverleafs Chatbot</h1>
-      <p class="welcome-message">
-        Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.
-      </p>
-      <!-- Navigation Buttons -->
-      <nav id="button-container">
-        <button class="nav-button" onclick="loadView('products')">Bekijk Producten</button>
-        <button class="nav-button" onclick="loadView('findPlant')">Vind de Perfecte Plant</button>
-        <button class="nav-button" onclick="loadView('maintenance')">Leer Onderhoud</button>
-        <button class="nav-button" onclick="loadView('checkOrderStatus')">Controleer Bestelstatus</button>
-      </nav>
-      <!-- Search Bar (for QA chat) -->
-      <div class="search-container" onclick="loadView('qa')">
-        <input type="text" class="search-input" placeholder="Vraag me iets..." readonly>
-        <span class="search-icon">&#128269;</span>
-      </div>
     </header>
-    <!-- Dynamic Content Section -->
-    <main id="content">
-      <p>Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.</p>
-    </main>
+    
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+      <div class="chat-message bot-message">
+        <p><span class="icon">🍃</span> Hey daar! Welkom bij NeverLeafs! Ik ben Leafie, jouw persoonlijke assistant. Waar kan ik je vandaag mee helpen?</p>
+      </div>
+    </div>
+    
+    <!-- Module Container (hidden by default) -->
+    <div class="module-container" id="module-container"></div>
+    
+    <!-- Footer: Module Buttons and Chat Input -->
+    <footer class="chat-footer">
+      <div id="button-container" class="module-buttons">
+        <button class="nav-button" onclick="showModule('products')">Bekijk Producten</button>
+        <button class="nav-button" onclick="showModule('findPlant')">Vind de Perfecte Plant</button>
+        <button class="nav-button" onclick="showModule('maintenance')">Leer Onderhoud</button>
+        <button class="nav-button" onclick="showModule('checkOrderStatus')">Controleer Bestelstatus</button>
+      </div>
+      <div class="chat-input-area" id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Typ je vraag...">
+        <button id="chat-send-button" onclick="sendMessage()">Verstuur</button>
+      </div>
+    </footer>
   </div>
   
   <script>
-    // Set the API base URL to your FastAPI backend
+    // API Base URL
     const API_BASE = 'http://127.0.0.1:8000';
     
-    // Define view templates for the SPA
+    /* --- Module View Templates --- */
     const views = {
-      home: `<p>Welkom! Selecteer een module of klik op de zoekbalk om te chatten met onze plantenspecialist.</p>`,
-      
-      // Products view – now using buttons for categories with dynamic translation
+      // Browse (Products) view
       products: `
         <header>
           <h1>Bekijk Producten</h1>
-          <a href="#" class="back-btn" onclick="loadView('home')">Terug naar Home</a>
+          <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
+        <p class="browse-desc">Kun je aangeven voor welke woonruimte je een kunstplant zoekt, zoals de slaapkamer, badkamer of woonkamer? En heb je een voorkeur voor een specifieke stijl, zoals modern of een andere sfeer? Laat ook even weten welke hoogte je ideaal vindt. Zo kan ik je de beste aanbevelingen geven!</p>
         <div class="category-select">
           <label>Kies een categorie:</label>
           <div id="category-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
@@ -486,20 +401,25 @@
       findPlant: `
         <header>
           <h1>Vind de Perfecte Plant</h1>
-          <a href="#" class="back-btn" onclick="loadView('home')">Terug naar Home</a>
+          <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
+        <p class="findplant-desc">Kun je aangeven voor welke woonruimte je een kunstplant zoekt, zoals de slaapkamer, badkamer of woonkamer? En heb je een voorkeur voor een specifieke stijl, zoals modern of een andere sfeer? Laat ook even weten welke hoogte je ideaal vindt. Zo kan ik je de beste aanbevelingen geven!</p>
         <div class="find-plant-form">
-          <input type="text" id="fp-location" placeholder="Gewenste locatie (bijv. kantoor, binnen, buiten)">
+          <input type="text" id="fp-location" placeholder="Woonruimte (slaapkamer, badkamer, woonkamer)">
           <input type="text" id="fp-size" placeholder="Gewenste grootte (klein, medium, groot)">
-          <input type="text" id="fp-style" placeholder="Gewenste stijl (modern, minimalistisch, tropisch)">
+          <input type="text" id="fp-style" placeholder="Stijl (modern, etc.)">
           <button class="find-plant-btn" onclick="findPlant()">Vind mijn perfecte plant</button>
         </div>
         <div id="find-plant-results" class="find-plant-results"></div>
       `,
       
-      // Maintenance view remains with buttons for general topics and a styled plant input
+      // Maintenance view
       maintenance: `
-        <h2>Onderhoudstips</h2>
+        <header>
+          <h1>Onderhoudstips</h1>
+          <button class="back-btn" onclick="hideModule()">Terug</button>
+        </header>
+        <p>Kun je specifieker aangeven waar je vraag over het onderhoud van de kunstplant precies over gaat? Denk bijvoorbeeld aan stofvrij houden, het opfrissen van de bladeren of de beste plek om ze neer te zetten. Zo kan ik je gerichter advies geven!</p>
         <div style="margin-bottom:20px;">
           <h3>Algemene Onderhoudstip</h3>
           <div id="maintenance-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -514,62 +434,79 @@
           <button id="get-plant-maintenance">Haal Onderhoudstip op</button>
         </div>
         <div id="maintenance-result" style="margin-top:20px;"></div>
-        <button class="back-btn" onclick="loadView('home')">Terug naar Home</button>
       `,
       
-      checkOrderStatus: `<h2>Controleer Bestelstatus</h2><p>Deze module is in aanbouw.</p>`,
-      
-      // QA view: Chat interface
-      qa: `
-        <h2>Plantenexpert Chat</h2>
-        <div class="chat-window" id="chat-window">
-          <div class="chat-message bot-message">
-            <p><span class="icon">🤖</span> Hallo! Hoe kan ik je helpen met planten van Neverleafs?</p>
-          </div>
-        </div>
-        <div id="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Typ je vraag...">
-          <button id="chat-send-button" onclick="sendMessage()">Verstuur</button>
-        </div>
-        <button id="exit-chat-button" onclick="exitConversation()">Verlaat gesprek</button>
+      // Check Order Status view
+      checkOrderStatus: `
+        <header>
+          <h1>Controleer Bestelstatus</h1>
+          <button class="back-btn" onclick="hideModule()">Terug</button>
+        </header>
+        <p>Deze module is in aanbouw.</p>
       `
     };
     
-    // Load a view into the #content area
-    function loadView(viewName) {
-      const contentDiv = document.getElementById('content');
-      contentDiv.innerHTML = views[viewName] || `<p>View niet gevonden.</p>`;
-      
-      // Show or hide navigation buttons in the header based on view
-      if (viewName === 'qa') {
-        document.getElementById('button-container').style.display = 'none';
-        // Attach keypress event for Enter on chat input after a brief delay
-        setTimeout(() => {
-          const chatInput = document.getElementById('chat-input');
-          if (chatInput) {
-            chatInput.addEventListener('keypress', function(e) {
-              if (e.key === 'Enter') sendMessage();
-            });
-          }
-        }, 0);
-      } else {
-        document.getElementById('button-container').style.display = 'flex';
-      }
-      
-      // Initialize products view if selected
-      if (viewName === 'products') {
+    /* --- Module Functions --- */
+    function showModule(moduleName) {
+      const moduleContainer = document.getElementById('module-container');
+      moduleContainer.innerHTML = views[moduleName] || `<p>Module niet gevonden.</p>`;
+      moduleContainer.style.display = 'block';
+      if (moduleName === 'products') {
         initProductsView();
       }
-      
-      // Initialize maintenance view if selected
-      if (viewName === 'maintenance') {
+      if (moduleName === 'maintenance') {
         initMaintenanceView();
+      }
+      if (moduleName === 'findPlant') {
+        // Set fixed width of 400px for inputs in the Find Perfect Plant module
+        const inputs = document.querySelectorAll('.find-plant-form input[type="text"]');
+        inputs.forEach(input => {
+          input.style.width = '400px';
+        });
       }
     }
     
-    // Initialize the products view: fetch categories and set up category buttons
+    function hideModule() {
+      document.getElementById('module-container').style.display = 'none';
+    }
+    
+    /* --- Chat Functions --- */
+    function appendChatMessage(sender, messageText) {
+      const chatWindow = document.getElementById('chat-window');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
+      const icon = sender === 'user' ? '🧑' : '🍃';  // Bot replies include the leaf icon
+      messageDiv.innerHTML = `<p><span class="icon">${icon}</span> ${messageText}</p>`;
+      chatWindow.appendChild(messageDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+    
+    async function sendMessage() {
+      const inputField = document.getElementById('chat-input');
+      const question = inputField.value.trim();
+      if (!question) return;
+      appendChatMessage('user', question);
+      inputField.value = '';
+      try {
+        const response = await fetch(`${API_BASE}/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: question })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          appendChatMessage('bot', data.response);
+        } else {
+          appendChatMessage('bot', 'Oeps, er is iets misgegaan!');
+        }
+      } catch (error) {
+        console.error('Fout:', error);
+        appendChatMessage('bot', 'Netwerkfout, probeer het later opnieuw.');
+      }
+    }
+    
+    /* --- Products View Functions --- */
     function initProductsView() {
-      // Mapping of English category names to Dutch
       const categoryMapping = {
         "flowers": "Bloemen",
         "succulents": "Vetplanten",
@@ -577,16 +514,13 @@
         "indoor": "Binnen",
         "office": "Kantoor",
         "outdoors": "Buiten"
-        // Add more mappings as needed
       };
-
       fetch(`${API_BASE}/products/categories`)
         .then(res => res.json())
         .then(data => {
           const categoryButtonsDiv = document.getElementById('category-buttons');
-          categoryButtonsDiv.innerHTML = ''; // Clear any existing content
+          categoryButtonsDiv.innerHTML = '';
           data.categories.forEach(cat => {
-            // Translate the category name if a mapping exists, otherwise use the original
             const translatedCat = categoryMapping[cat.toLowerCase()] || cat;
             const btn = document.createElement('button');
             btn.className = 'nav-button';
@@ -604,10 +538,9 @@
         .catch(error => console.error('Fout bij het ophalen van categorieën:', error));
     }
     
-    // Display products in the carousel container
     function displayProducts(products) {
       const carousel = document.getElementById('productsCarousel');
-      carousel.innerHTML = ''; // Clear previous products
+      carousel.innerHTML = '';
       products.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
@@ -627,9 +560,10 @@
         carousel.appendChild(card);
       });
       attachCartActions();
+      // Auto-scroll the carousel container to the rightmost end
+      carousel.scrollLeft = carousel.scrollWidth;
     }
     
-    // Attach event listeners for Add to Cart and Remove buttons
     function attachCartActions() {
       document.querySelectorAll('.add-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
@@ -642,7 +576,6 @@
             });
             const data = await res.json();
             showMessage(data.message);
-            // Toggle the buttons
             e.target.style.display = 'none';
             e.target.parentElement.querySelector('.remove-btn').style.display = 'inline-block';
           } catch (error) {
@@ -651,7 +584,6 @@
           }
         });
       });
-    
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const productId = e.target.getAttribute('data-id');
@@ -663,7 +595,6 @@
             });
             const data = await res.json();
             showMessage(data.message);
-            // Toggle the buttons
             e.target.style.display = 'none';
             e.target.parentElement.querySelector('.add-btn').style.display = 'inline-block';
           } catch (error) {
@@ -674,60 +605,14 @@
       });
     }
     
-    // Display a temporary message (for cart actions)
     function showMessage(msg) {
       const msgDiv = document.getElementById('message');
       msgDiv.textContent = msg;
-      setTimeout(() => {
-        msgDiv.textContent = '';
-      }, 3000);
+      setTimeout(() => { msgDiv.textContent = ''; }, 3000);
     }
     
-    /* --- Chat Interface Functions --- */
-    function appendChatMessage(sender, text) {
-      const chatWindow = document.getElementById('chat-window');
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
-      const icon = sender === 'user' ? '🧑' : '🤖';
-      messageDiv.innerHTML = `<p><span class="icon">${icon}</span> ${text}</p>`;
-      chatWindow.appendChild(messageDiv);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-    
-    async function sendMessage() {
-      const inputField = document.getElementById('chat-input');
-      const question = inputField.value.trim();
-      if (!question) return;
-      
-      appendChatMessage('user', question);
-      inputField.value = '';
-      
-      try {
-        const response = await fetch(`${API_BASE}/query`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: question })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          appendChatMessage('bot', data.response);
-        } else {
-          appendChatMessage('bot', 'Oeps, er is iets misgegaan!');
-        }
-      } catch (error) {
-        console.error('Fout:', error);
-        appendChatMessage('bot', 'Netwerkfout, probeer het later opnieuw.');
-      }
-    }
-    
-    function exitConversation() {
-      loadView('home');
-    }
-    
-    // Initialize Maintenance View: attach event listeners for tip lookups
+    /* --- Maintenance View Functions --- */
     function initMaintenanceView() {
-      // Attach event listeners to each maintenance topic button
       document.querySelectorAll('#maintenance-buttons .maintenance-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const topic = btn.getAttribute('data-topic');
@@ -735,6 +620,9 @@
             .then(res => res.json())
             .then(data => {
               document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+              // Auto-scroll the maintenance result container to the bottom
+              const maintResult = document.getElementById('maintenance-result');
+              maintResult.scrollTop = maintResult.scrollHeight;
             })
             .catch(error => {
               console.error('Fout bij ophalen onderhoudstip:', error);
@@ -742,8 +630,6 @@
             });
         });
       });
-      
-      // Plant-specific maintenance lookup
       const plantBtn = document.getElementById('get-plant-maintenance');
       if (plantBtn) {
         plantBtn.addEventListener('click', () => {
@@ -756,6 +642,8 @@
             .then(res => res.json())
             .then(data => {
               document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+              const maintResult = document.getElementById('maintenance-result');
+              maintResult.scrollTop = maintResult.scrollHeight;
             })
             .catch(error => {
               console.error('Fout bij ophalen plantonderhoudstip:', error);
@@ -765,17 +653,15 @@
       }
     }
     
-    // Find Perfect Plant Functionality: gathers user inputs and calls the API
+    /* --- Find Perfect Plant Functions --- */
     function findPlant() {
       const location = document.getElementById('fp-location').value.trim();
       const size = document.getElementById('fp-size').value.trim();
       const style = document.getElementById('fp-style').value.trim();
-      
       if (!location || !size || !style) {
         alert('Vul alstublieft alle velden in met uw voorkeuren.');
         return;
       }
-      
       fetch(`${API_BASE}/find_plant`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -791,21 +677,16 @@
       });
     }
     
-    // Display the plant matching results in the find plant module
     function displayPlantResults(plants) {
       const resultsDiv = document.getElementById('find-plant-results');
       resultsDiv.innerHTML = '';
-      
-      // If there's a message (no match found) return it.
       if (plants.length === 0 || (plants[0] && plants[0].message)) {
         resultsDiv.innerHTML = `<p>${plants[0].message || 'Geen overeenkomsten gevonden.'}</p>`;
         return;
       }
-      
       plants.forEach(plant => {
         const card = document.createElement('div');
         card.className = 'plant-card';
-        // Prepend the BASE_IMAGE_URL to the plant image name
         const imageUrl = `${API_BASE}/static/images/${plant.image}`;
         card.innerHTML = `
           <img src="${imageUrl}" alt="${plant.name}">
@@ -818,11 +699,23 @@
         `;
         resultsDiv.appendChild(card);
       });
+      // Auto-scroll the find-plant-results container to the bottom
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
     }
     
-    // On page load, default to the home view
+    /* --- Hide Module Container When Chat Input is Clicked --- */
+    document.getElementById('chat-input').addEventListener('click', hideModule);
+    
+    /* --- Initialization on Page Load --- */
     document.addEventListener('DOMContentLoaded', () => {
-      loadView('home');
+      // The chat window already shows a welcome message.
+      
+      // Set up a MutationObserver on the module container to auto-scroll when new content is added
+      const moduleContainer = document.getElementById('module-container');
+      const observer = new MutationObserver(() => {
+        moduleContainer.scrollTop = moduleContainer.scrollHeight;
+      });
+      observer.observe(moduleContainer, { childList: true, subtree: true });
     });
   </script>
 </body>
