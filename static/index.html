@@ -6,21 +6,18 @@
   <!-- Import Montserrat from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* --- Color Variables --- */
+    /* --- Color Variables (unchanged) --- */
     :root {
-      --chat-bg: #fdfaef;           /* Chatbot background (light) */
-      --border-color: #40442e;       /* Global/darker color for borders and headings */
-      --header-bg: #40442e;          /* Header background (dark) */
-      --header-text: #fdfaef;        /* Header text (light) */
-      /* Button colors */
-      --button-bg: #fdfaef;          /* Normal button background (light) */
-      --button-text: #40442e;        /* Normal button text (dark) */
-      --button-border: #40442e;      /* Normal button border (dark) */
-      /* Hover colors (inverted) */
-      --button-hover-bg: #40442e;     /* Button hover background (dark) */
-      --button-hover-text: #fdfaef;   /* Button hover text (light) */
-      --button-hover-border: #fdfaef; /* Button hover border (light) */
-      /* Input fields */
+      --chat-bg: #fdfaef;           
+      --border-color: #40442e;       
+      --header-bg: #40442e;          
+      --header-text: #fdfaef;        
+      --button-bg: #fdfaef;          
+      --button-text: #40442e;        
+      --button-border: #40442e;      
+      --button-hover-bg: #40442e;     
+      --button-hover-text: #fdfaef;   
+      --button-hover-border: #fdfaef; 
       --input-bg: #fdfaef;
       --input-border: #40442e;
       --shadow: rgba(0, 0, 0, 0.15);
@@ -28,23 +25,64 @@
     }
     
     /* --- Global Reset & Base Font Size --- */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     html, body {
       height: 100%;
       margin: 0;
       font-family: var(--font-family);
-      font-size: 1rem; /* Increased global font size */
+      font-size: 1rem;
       background: var(--chat-bg);
     }
     
-    /* --- Chat Container --- */
+    /* --- Chat Launcher --- */
+    #chat-launcher {
+      width: 70vw;
+      height: 86vh;
+      margin: 5vh 15vw;
+      background: var(--chat-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: 0 8px 20px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    /* Launcher message styling with creative gradient and reduced font size */
+    #chat-launcher .launcher-message {
+      background: linear-gradient(135deg, #e8e6e1, #fdfaef);
+      color: var(--border-color);
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 1.2rem; /* Reduced font size */
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px var(--shadow);
+      max-width: 80%;
+    }
+    #chat-launcher button {
+      border: 2px solid var(--button-border);
+      border-radius: 10px;
+      padding: 12px 25px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      transition: background-color 0.3s, color 0.3s, border 0.3s, transform 0.2s;
+    }
+    #chat-launcher button:hover {
+      background-color: var(--button-hover-bg);
+      color: var(--button-hover-text);
+      border: 2px solid var(--button-hover-border);
+      transform: translateY(-2px);
+    }
+    
+    /* --- Chat Container (Conversation) --- */
     .chat-container {
       width: 70vw;
-      height: 86vh; /* Increased by 20% from previous 72vh */
+      height: 86vh;
       margin: 5vh 15vw;
-      display: flex;
+      display: none; /* Initially hidden */
       flex-direction: column;
       background: var(--chat-bg);
       border: 1px solid var(--border-color);
@@ -53,13 +91,18 @@
       box-shadow: 0 8px 20px var(--shadow);
     }
     
-    /* --- Header (Reduced Padding) --- */
+    /* --- Creative Chat Header --- */
     .chat-header {
-      background: var(--header-bg);
+      background: linear-gradient(135deg, var(--header-bg), #2c2c2c);
       color: var(--header-text);
-      padding: 10px; /* Reduced from 15px */
+      padding: 15px;
       text-align: center;
       flex: 0 0 auto;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .chat-header p {
+      font-size: 0.9rem;
+      margin-top: 5px;
     }
     
     /* --- Chat Window --- */
@@ -70,7 +113,7 @@
       background: var(--chat-bg);
     }
     
-    /* --- Module Container (hidden by default) --- */
+    /* --- Module Container --- */
     .module-container {
       display: none;
       width: 90%;
@@ -79,22 +122,13 @@
       background: var(--chat-bg);
       border: 1px solid var(--border-color);
       border-radius: 10px;
-      max-height: 64vh; /* Increased by 20% from previous 53vh */
+      max-height: 64vh;
       overflow-y: auto;
     }
-    
-    /* Ensure all headings in modules use the darker color */
     .module-container h1,
     .module-container h2,
-    .module-container h3 {
-      color: var(--border-color);
-    }
-    
-    /* General paragraph rule for modules */
-    .module-container p {
-      white-space: normal;
-      word-break: break-word;
-    }
+    .module-container h3 { color: var(--border-color); }
+    .module-container p { white-space: normal; word-break: break-word; }
     
     /* --- Footer --- */
     .chat-footer {
@@ -103,7 +137,7 @@
       flex: 0 0 auto;
     }
     
-    /* --- Button Styles --- */
+    /* --- Button Styles (unchanged) --- */
     button {
       border: 2px solid var(--button-border);
       border-radius: 10px;
@@ -138,34 +172,46 @@
       font-size: 1rem;
       background: var(--input-bg);
       color: var(--input-border);
-      transition: border-color 0.3s;
-    }
-    /* For inputs inside modules, use fit-content */
-    .module-container input[type="text"] {
-      display: inline-block;
-      width: -moz-fit-content;
-      width: -webkit-fit-content;
-      width: fit-content;
-    }
-    /* Specifically for the Find Perfect Plant module, override to a fixed 400px */
-    .find-plant-form input[type="text"] {
-      width: 400px;
+      transition: box-shadow 0.3s ease;
     }
     input[type="text"]:focus {
       border-color: var(--input-border);
       outline: none;
+      box-shadow: 0 0 10px var(--border-color);
+    }
+    .module-container input[type="text"] {
+      display: inline-block;
+      width: fit-content;
+    }
+    .find-plant-form input[type="text"] {
+      width: 400px;
     }
     
-    /* --- Chat Input Area --- */
+    /* --- Chat Input Area with Embedded Search Icon --- */
     .chat-input-area {
       display: flex;
       gap: 10px;
+      align-items: center;
     }
-    #chat-input {
+    .input-container {
+      position: relative;
       flex: 1;
     }
+    .input-container input[type="text"] {
+      padding-right: 50px; /* extra space for the search icon */
+    }
+    /* Inline SVG search icon: dark stroke and transparent fill */
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+    }
     
-    /* --- Chat Message Styles --- */
+    /* --- Chat Message Styles (unchanged) --- */
     .chat-message {
       margin: 10px 0;
       display: flex;
@@ -195,8 +241,7 @@
       align-self: flex-end;
     }
     
-    /* --- Module-Specific Styles --- */
-    /* Browse (Products) view */
+    /* --- Module-Specific Styles (unchanged) --- */
     .category-select {
       margin-bottom: 25px;
       display: flex;
@@ -211,7 +256,6 @@
       margin-bottom: 15px;
       color: var(--border-color);
     }
-    /* Carousel container now scrolls horizontally in a single line */
     .carousel-container {
       display: flex;
       overflow-x: auto;
@@ -220,9 +264,7 @@
       flex-wrap: nowrap;
       justify-content: flex-start;
     }
-    .carousel-container::-webkit-scrollbar {
-      height: 8px;
-    }
+    .carousel-container::-webkit-scrollbar { height: 8px; }
     .carousel-container::-webkit-scrollbar-thumb {
       background: var(--border-color);
       border-radius: 4px;
@@ -238,9 +280,7 @@
       flex-direction: column;
       transition: transform 0.2s;
     }
-    .product-card:hover {
-      transform: translateY(-4px);
-    }
+    .product-card:hover { transform: translateY(-4px); }
     .product-card img {
       width: 100%;
       aspect-ratio: 2 / 3;
@@ -274,7 +314,6 @@
       border-top: 1px solid var(--border-color);
     }
     
-    /* Find Perfect Plant view */
     .find-plant-form {
       width: 100%;
       display: flex;
@@ -282,10 +321,7 @@
       gap: 15px;
       margin-bottom: 20px;
     }
-    .findplant-desc {
-      margin-bottom: 15px;
-      color: var(--border-color);
-    }
+    .findplant-desc { margin-bottom: 15px; color: var(--border-color); }
     .find-plant-results {
       display: flex;
       flex-wrap: wrap;
@@ -306,9 +342,7 @@
       text-align: center;
       padding-bottom: 10px;
     }
-    .plant-card:hover {
-      transform: translateY(-4px);
-    }
+    .plant-card:hover { transform: translateY(-4px); }
     .plant-card img {
       width: 100%;
       height: 150px;
@@ -316,16 +350,9 @@
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
-    .plant-info {
-      padding: 10px;
-      color: var(--border-color);
-    }
-    .plant-info h3 {
-      margin: 5px 0;
-      font-size: 1.1rem;
-    }
+    .plant-info { padding: 10px; color: var(--border-color); }
+    .plant-info h3 { margin: 5px 0; font-size: 1.1rem; }
     
-    /* Maintenance view */
     .maintenance-input {
       width: 300px;
       padding: 12px 15px;
@@ -343,10 +370,21 @@
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <!-- Header -->
+  <!-- Chat Launcher Section (Visible when conversation is closed) -->
+  <div id="chat-launcher">
+    <div class="launcher-message">
+      <!-- Default text in Dutch -->
+      Heb je vragen voor ons? Vraag nu direct!
+    </div>
+    <button onclick="openConversation()">Chat starten</button>
+  </div>
+  
+  <!-- Chat Conversation Container (Initially hidden) -->
+  <div class="chat-container" id="chat-container">
+    <!-- Creative Chat Header -->
     <header class="chat-header">
       <h1>Neverleafs Chatbot</h1>
+      <p>Altijd klaar om te helpen – ontdek onze wereld van kunstplanten!</p>
     </header>
     
     <!-- Chat Window -->
@@ -359,7 +397,7 @@
     <!-- Module Container (hidden by default) -->
     <div class="module-container" id="module-container"></div>
     
-    <!-- Footer: Module Buttons and Chat Input -->
+    <!-- Footer: Module Buttons and Chat Input Area -->
     <footer class="chat-footer">
       <div id="button-container" class="module-buttons">
         <button class="nav-button" onclick="showModule('products')">Bekijk Producten</button>
@@ -368,19 +406,95 @@
         <button class="nav-button" onclick="showModule('checkOrderStatus')">Controleer Bestelstatus</button>
       </div>
       <div class="chat-input-area" id="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Typ je vraag...">
-        <button id="chat-send-button" onclick="sendMessage()">Verstuur</button>
+        <div class="input-container">
+          <input type="text" id="chat-input" placeholder="Typ je vraag...">
+          <!-- Inline SVG search icon: dark stroke, transparent fill -->
+          <span class="search-icon" onclick="sendMessage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="var(--border-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+        </div>
+        <button id="exit-conversation-button" onclick="exitConversation()">Gesprek afsluiten</button>
       </div>
     </footer>
   </div>
   
   <script>
-    // API Base URL
-    const API_BASE = 'http://127.0.0.1:8000';
+    // Force Dutch for the UI launcher texts
+    let lang = 'nl';
+    const texts = {
+      nl: {
+        launcherMessage: "Heb je vragen voor ons? Vraag nu direct!",
+        openChat: "Chat starten",
+        exitButton: "Gesprek afsluiten",
+        endMessage: `<p>🌿 Denk bij het kiezen van de juiste kunstplant vooral aan de hoogte en de plek waar je deze wilt plaatsen. Binnen of buiten maakt bijvoorbeeld verschil — buiten adviseren we UV-bestendige kunstplanten.</p>
+<p>👉 Kunstplant in een hoek: Grotere kunstplanten rond de 150 cm zijn vaak een mooie keuze.</p>
+<p>👉 Kunstplant op de eetkamertafel: Hier komt een compacte kunstplant van zo’n 50 centimeter beter tot zijn recht.</p>
+<p>Benieuwd naar onze bestsellers? Ontdek ze hier! 🌟</p>`,
+        inputPlaceholder: "Typ je vraag..."
+      },
+      en: {
+        launcherMessage: "Have some questions for us? Ask right now!",
+        openChat: "Open Chat",
+        exitButton: "Exit conversation",
+        endMessage: `<p>🌿 When choosing the right artificial plant, consider especially its height and the spot where you intend to place it. Indoor or outdoor makes a difference — for outdoors, we recommend UV-resistant artificial plants.</p>
+<p>👉 For a corner: Larger artificial plants around 150 cm are often a beautiful choice.</p>
+<p>👉 On the dining table: A compact artificial plant of about 50 cm works best.</p>
+<p>Curious about our bestsellers? Discover them here! 🌟</p>`,
+        inputPlaceholder: "Type your question..."
+      }
+    };
+
+    // On page load, update the texts using Dutch
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguageTexts();
+      
+      // Set up a MutationObserver on the module container to auto-scroll when new content is added
+      const moduleContainer = document.getElementById('module-container');
+      const observer = new MutationObserver(() => {
+        moduleContainer.scrollTop = moduleContainer.scrollHeight;
+      });
+      observer.observe(moduleContainer, { childList: true, subtree: true });
+    });
     
-    /* --- Module View Templates --- */
+    function updateLanguageTexts() {
+      // Force Dutch texts for the launcher
+      const launcher = document.getElementById('chat-launcher');
+      launcher.innerHTML = `
+        <div class="launcher-message">${texts.nl.launcherMessage}</div>
+        <button onclick="openConversation()">${texts.nl.openChat}</button>
+      `;
+      // Update input placeholder and exit button text
+      document.getElementById('chat-input').placeholder = texts.nl.inputPlaceholder;
+      document.getElementById('exit-conversation-button').textContent = texts.nl.exitButton;
+    }
+    
+    /* --- Toggle Functions --- */
+    function openConversation() {
+      // Hide the launcher and show the chat container
+      document.getElementById('chat-launcher').style.display = 'none';
+      document.getElementById('chat-container').style.display = 'flex';
+    }
+    
+    function exitConversation() {
+      // Hide the chat container and update the launcher with the end message and new prompt
+      document.getElementById('chat-container').style.display = 'none';
+      document.getElementById('chat-launcher').innerHTML = `
+        <div class="launcher-message end-message">
+          ${texts.nl.endMessage}
+        </div>
+        <div class="launcher-message">
+          ${texts.nl.launcherMessage}
+        </div>
+        <button onclick="openConversation()">${texts.nl.openChat}</button>
+      `;
+      document.getElementById('chat-launcher').style.display = 'flex';
+    }
+    
+    /* --- Module View Templates (unchanged) --- */
     const views = {
-      // Browse (Products) view
       products: `
         <header>
           <h1>Bekijk Producten</h1>
@@ -396,8 +510,6 @@
         </div>
         <div id="message"></div>
       `,
-      
-      // Find Perfect Plant view
       findPlant: `
         <header>
           <h1>Vind de Perfecte Plant</h1>
@@ -412,8 +524,6 @@
         </div>
         <div id="find-plant-results" class="find-plant-results"></div>
       `,
-      
-      // Maintenance view
       maintenance: `
         <header>
           <h1>Onderhoudstips</h1>
@@ -435,8 +545,6 @@
         </div>
         <div id="maintenance-result" style="margin-top:20px;"></div>
       `,
-      
-      // Check Order Status view
       checkOrderStatus: `
         <header>
           <h1>Controleer Bestelstatus</h1>
@@ -446,23 +554,15 @@
       `
     };
     
-    /* --- Module Functions --- */
     function showModule(moduleName) {
       const moduleContainer = document.getElementById('module-container');
       moduleContainer.innerHTML = views[moduleName] || `<p>Module niet gevonden.</p>`;
       moduleContainer.style.display = 'block';
-      if (moduleName === 'products') {
-        initProductsView();
-      }
-      if (moduleName === 'maintenance') {
-        initMaintenanceView();
-      }
+      if (moduleName === 'products') { initProductsView(); }
+      if (moduleName === 'maintenance') { initMaintenanceView(); }
       if (moduleName === 'findPlant') {
-        // Set fixed width of 400px for inputs in the Find Perfect Plant module
         const inputs = document.querySelectorAll('.find-plant-form input[type="text"]');
-        inputs.forEach(input => {
-          input.style.width = '400px';
-        });
+        inputs.forEach(input => { input.style.width = '400px'; });
       }
     }
     
@@ -470,12 +570,12 @@
       document.getElementById('module-container').style.display = 'none';
     }
     
-    /* --- Chat Functions --- */
+    /* --- Chat Functions (unchanged) --- */
     function appendChatMessage(sender, messageText) {
       const chatWindow = document.getElementById('chat-window');
       const messageDiv = document.createElement('div');
       messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
-      const icon = sender === 'user' ? '🧑' : '🍃';  // Bot replies include the leaf icon
+      const icon = sender === 'user' ? '🧑' : '🍃';
       messageDiv.innerHTML = `<p><span class="icon">${icon}</span> ${messageText}</p>`;
       chatWindow.appendChild(messageDiv);
       chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -505,7 +605,7 @@
       }
     }
     
-    /* --- Products View Functions --- */
+    /* --- Products View Functions (unchanged) --- */
     function initProductsView() {
       const categoryMapping = {
         "flowers": "Bloemen",
@@ -560,7 +660,6 @@
         carousel.appendChild(card);
       });
       attachCartActions();
-      // Auto-scroll the carousel container to the rightmost end
       carousel.scrollLeft = carousel.scrollWidth;
     }
     
@@ -611,7 +710,7 @@
       setTimeout(() => { msgDiv.textContent = ''; }, 3000);
     }
     
-    /* --- Maintenance View Functions --- */
+    /* --- Maintenance View Functions (unchanged) --- */
     function initMaintenanceView() {
       document.querySelectorAll('#maintenance-buttons .maintenance-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -620,7 +719,6 @@
             .then(res => res.json())
             .then(data => {
               document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
-              // Auto-scroll the maintenance result container to the bottom
               const maintResult = document.getElementById('maintenance-result');
               maintResult.scrollTop = maintResult.scrollHeight;
             })
@@ -653,7 +751,7 @@
       }
     }
     
-    /* --- Find Perfect Plant Functions --- */
+    /* --- Find Perfect Plant Functions (unchanged) --- */
     function findPlant() {
       const location = document.getElementById('fp-location').value.trim();
       const size = document.getElementById('fp-size').value.trim();
@@ -699,24 +797,11 @@
         `;
         resultsDiv.appendChild(card);
       });
-      // Auto-scroll the find-plant-results container to the bottom
       resultsDiv.scrollTop = resultsDiv.scrollHeight;
     }
     
     /* --- Hide Module Container When Chat Input is Clicked --- */
     document.getElementById('chat-input').addEventListener('click', hideModule);
-    
-    /* --- Initialization on Page Load --- */
-    document.addEventListener('DOMContentLoaded', () => {
-      // The chat window already shows a welcome message.
-      
-      // Set up a MutationObserver on the module container to auto-scroll when new content is added
-      const moduleContainer = document.getElementById('module-container');
-      const observer = new MutationObserver(() => {
-        moduleContainer.scrollTop = moduleContainer.scrollHeight;
-      });
-      observer.observe(moduleContainer, { childList: true, subtree: true });
-    });
   </script>
 </body>
 </html>
