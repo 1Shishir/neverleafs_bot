@@ -198,9 +198,8 @@
       flex: 1;
     }
     .input-container input[type="text"] {
-      padding-right: 50px; /* extra space for the search icon */
+      padding-right: 50px;
     }
-    /* Inline SVG search icon: dark stroke and transparent fill */
     .search-icon {
       position: absolute;
       right: 15px;
@@ -322,6 +321,10 @@
       margin-bottom: 20px;
     }
     .findplant-desc { margin-bottom: 15px; color: var(--border-color); }
+    /* --- Updated Find Perfect Plant View: Single Field --- */
+    .find-plant-form.single-field input[type="text"] {
+      width: 100%;
+    }
     .find-plant-results {
       display: flex;
       flex-wrap: wrap;
@@ -373,7 +376,6 @@
   <!-- Chat Launcher Section (Visible when conversation is closed) -->
   <div id="chat-launcher">
     <div class="launcher-message">
-      <!-- Default text in Dutch -->
       Heb je vragen voor ons? Vraag nu direct!
     </div>
     <button onclick="openConversation()">Chat starten</button>
@@ -400,15 +402,14 @@
     <!-- Footer: Module Buttons and Chat Input Area -->
     <footer class="chat-footer">
       <div id="button-container" class="module-buttons">
-        <button class="nav-button" onclick="showModule('products')">Bekijk Producten</button>
-        <button class="nav-button" onclick="showModule('findPlant')">Vind de Perfecte Plant</button>
-        <button class="nav-button" onclick="showModule('maintenance')">Leer Onderhoud</button>
-        <button class="nav-button" onclick="showModule('checkOrderStatus')">Controleer Bestelstatus</button>
+        <button class="nav-button" onclick="showModule('products')">Bekijk onze producten</button>
+        <button class="nav-button" onclick="showModule('findPlant')">Vind de plant die bij jou past</button>
+        <button class="nav-button" onclick="showModule('maintenance')">Onderhoudtips</button>
+        <button class="nav-button" onclick="showModule('checkOrderStatus')">Bestelstatus</button>
       </div>
       <div class="chat-input-area" id="chat-input-area">
         <div class="input-container">
           <input type="text" id="chat-input" placeholder="Typ je vraag...">
-          <!-- Inline SVG search icon: dark stroke, transparent fill -->
           <span class="search-icon" onclick="sendMessage()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="var(--border-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
@@ -422,7 +423,22 @@
   </div>
   
   <script>
-    // Force Dutch for the UI launcher texts
+    // API Base URL
+    const API_BASE = 'http://127.0.0.1:8000';
+    
+    /* --- Helper Function to Format Maintenance Responses --- */
+    function formatMaintenanceResponse(data) {
+      let tipContent = '';
+      if (Array.isArray(data.tip)) {
+        tipContent = data.tip.map(t => `<li>${t}</li>`).join('');
+      } else if (typeof data.tip === 'string') {
+        const tipLines = data.tip.split('\n').filter(line => line.trim() !== '');
+        tipContent = tipLines.map(t => `<li>${t.trim()}</li>`).join('');
+      }
+      return `<p>${data.message}</p><ul>${tipContent}</ul>`;
+    }
+    
+    /* --- Language Texts --- */
     let lang = 'nl';
     const texts = {
       nl: {
@@ -447,7 +463,6 @@
       }
     };
 
-    // On page load, update the texts using Dutch
     document.addEventListener('DOMContentLoaded', () => {
       updateLanguageTexts();
       
@@ -460,26 +475,22 @@
     });
     
     function updateLanguageTexts() {
-      // Force Dutch texts for the launcher
       const launcher = document.getElementById('chat-launcher');
       launcher.innerHTML = `
         <div class="launcher-message">${texts.nl.launcherMessage}</div>
         <button onclick="openConversation()">${texts.nl.openChat}</button>
       `;
-      // Update input placeholder and exit button text
       document.getElementById('chat-input').placeholder = texts.nl.inputPlaceholder;
       document.getElementById('exit-conversation-button').textContent = texts.nl.exitButton;
     }
     
     /* --- Toggle Functions --- */
     function openConversation() {
-      // Hide the launcher and show the chat container
       document.getElementById('chat-launcher').style.display = 'none';
       document.getElementById('chat-container').style.display = 'flex';
     }
     
     function exitConversation() {
-      // Hide the chat container and update the launcher with the end message and new prompt
       document.getElementById('chat-container').style.display = 'none';
       document.getElementById('chat-launcher').innerHTML = `
         <div class="launcher-message end-message">
@@ -493,11 +504,11 @@
       document.getElementById('chat-launcher').style.display = 'flex';
     }
     
-    /* --- Module View Templates (unchanged) --- */
+    /* --- Module View Templates --- */
     const views = {
       products: `
         <header>
-          <h1>Bekijk Producten</h1>
+          <h1>Bekijk onze producten</h1>
           <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
         <p class="browse-desc">Kun je aangeven voor welke woonruimte je een kunstplant zoekt, zoals de slaapkamer, badkamer of woonkamer? En heb je een voorkeur voor een specifieke stijl, zoals modern of een andere sfeer? Laat ook even weten welke hoogte je ideaal vindt. Zo kan ik je de beste aanbevelingen geven!</p>
@@ -510,44 +521,46 @@
         </div>
         <div id="message"></div>
       `,
+      /* --- Updated Find Perfect Plant View: Single Field --- */
       findPlant: `
         <header>
-          <h1>Vind de Perfecte Plant</h1>
+          <h1>Vind de plant die bij jou past</h1>
           <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
-        <p class="findplant-desc">Kun je aangeven voor welke woonruimte je een kunstplant zoekt, zoals de slaapkamer, badkamer of woonkamer? En heb je een voorkeur voor een specifieke stijl, zoals modern of een andere sfeer? Laat ook even weten welke hoogte je ideaal vindt. Zo kan ik je de beste aanbevelingen geven!</p>
-        <div class="find-plant-form">
-          <input type="text" id="fp-location" placeholder="Woonruimte (slaapkamer, badkamer, woonkamer)">
-          <input type="text" id="fp-size" placeholder="Gewenste grootte (klein, medium, groot)">
-          <input type="text" id="fp-style" placeholder="Stijl (modern, etc.)">
+        <p class="findplant-desc">
+          Kun je aangeven voor welke woonruimte je een kunstplant zoekt, zoals de slaapkamer, badkamer of woonkamer? En heb je een voorkeur voor een specifieke stijl, zoals modern of een andere sfeer? Laat ook even weten welke hoogte je ideaal vindt. Zo kan ik je de beste aanbevelingen geven!
+        </p>
+        <div class="find-plant-form single-field">
+          <input type="text" id="fp-query" placeholder="Bijv. binnen, klein, modern">
           <button class="find-plant-btn" onclick="findPlant()">Vind mijn perfecte plant</button>
         </div>
         <div id="find-plant-results" class="find-plant-results"></div>
       `,
       maintenance: `
         <header>
-          <h1>Onderhoudstips</h1>
+          <h1>Onderhoudtips</h1>
           <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
         <p>Kun je specifieker aangeven waar je vraag over het onderhoud van de kunstplant precies over gaat? Denk bijvoorbeeld aan stofvrij houden, het opfrissen van de bladeren of de beste plek om ze neer te zetten. Zo kan ik je gerichter advies geven!</p>
         <div style="margin-bottom:20px;">
           <h3>Algemene Onderhoudstip</h3>
           <div id="maintenance-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="maintenance-btn" data-topic="cleaning">Schoonmaken</button>
-            <button class="maintenance-btn" data-topic="uv_protection">UV Bescherming</button>
-            <button class="maintenance-btn" data-topic="sustainability">Duurzaamheid</button>
+            <button class="maintenance-btn" data-topic="cleaning">Hoe maak je kunstplanten schoon?</button>
+            <button class="maintenance-btn" data-topic="uv_protection">Waar moet je op letten bij buitenplanten?</button>
+            <button class="maintenance-btn" data-topic="durability">Zijn de kunstplanten duurzaam?</button>
           </div>
         </div>
         <div style="margin-bottom:20px;">
-          <h3>Plant-specifiek Onderhoud</h3>
-          <input type="text" id="plant-name" class="maintenance-input" placeholder="Voer plantnaam in">
+          
+          <h3 for="plant-maintenance-input">Heb je een andere vraag over onderhoud?</h3>
+          <input type="text" id="plant-maintenance-input" class="maintenance-input" placeholder="Stel hier je vraag">
           <button id="get-plant-maintenance">Haal Onderhoudstip op</button>
         </div>
         <div id="maintenance-result" style="margin-top:20px;"></div>
       `,
       checkOrderStatus: `
         <header>
-          <h1>Controleer Bestelstatus</h1>
+          <h1>Bestelstatus</h1>
           <button class="back-btn" onclick="hideModule()">Terug</button>
         </header>
         <p>Deze module is in aanbouw.</p>
@@ -561,8 +574,7 @@
       if (moduleName === 'products') { initProductsView(); }
       if (moduleName === 'maintenance') { initMaintenanceView(); }
       if (moduleName === 'findPlant') {
-        const inputs = document.querySelectorAll('.find-plant-form input[type="text"]');
-        inputs.forEach(input => { input.style.width = '400px'; });
+        // For the updated view, no extra width is needed since it's a single field
       }
     }
     
@@ -570,7 +582,7 @@
       document.getElementById('module-container').style.display = 'none';
     }
     
-    /* --- Chat Functions (unchanged) --- */
+    /* --- Chat Functions --- */
     function appendChatMessage(sender, messageText) {
       const chatWindow = document.getElementById('chat-window');
       const messageDiv = document.createElement('div');
@@ -605,7 +617,7 @@
       }
     }
     
-    /* --- Products View Functions (unchanged) --- */
+    /* --- Products View Functions --- */
     function initProductsView() {
       const categoryMapping = {
         "flowers": "Bloemen",
@@ -710,7 +722,7 @@
       setTimeout(() => { msgDiv.textContent = ''; }, 3000);
     }
     
-    /* --- Maintenance View Functions (unchanged) --- */
+    /* --- Maintenance View Functions (UPDATED) --- */
     function initMaintenanceView() {
       document.querySelectorAll('#maintenance-buttons .maintenance-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -718,7 +730,7 @@
           fetch(`${API_BASE}/maintenance/${topic}`)
             .then(res => res.json())
             .then(data => {
-              document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+              document.getElementById('maintenance-result').innerHTML = formatMaintenanceResponse(data);
               const maintResult = document.getElementById('maintenance-result');
               maintResult.scrollTop = maintResult.scrollHeight;
             })
@@ -731,15 +743,15 @@
       const plantBtn = document.getElementById('get-plant-maintenance');
       if (plantBtn) {
         plantBtn.addEventListener('click', () => {
-          const plantName = document.getElementById('plant-name').value.trim();
-          if (!plantName) {
-            alert('Vul alstublieft een plantnaam in.');
+          const question = document.getElementById('plant-maintenance-input').value.trim();
+          if (!question) {
+            alert('Vul alstublieft een vraag in.');
             return;
           }
-          fetch(`${API_BASE}/maintenance/plant/${plantName}`)
+          fetch(`${API_BASE}/maintenance/plant/${encodeURIComponent(question)}`)
             .then(res => res.json())
             .then(data => {
-              document.getElementById('maintenance-result').innerHTML = `<p>${data.message} ${data.tip}</p>`;
+              document.getElementById('maintenance-result').innerHTML = formatMaintenanceResponse(data);
               const maintResult = document.getElementById('maintenance-result');
               maintResult.scrollTop = maintResult.scrollHeight;
             })
@@ -751,24 +763,27 @@
       }
     }
     
-    /* --- Find Perfect Plant Functions (unchanged) --- */
+    /* --- Updated Find Perfect Plant Functions --- */
     function findPlant() {
-      const location = document.getElementById('fp-location').value.trim();
-      const size = document.getElementById('fp-size').value.trim();
-      const style = document.getElementById('fp-style').value.trim();
-      if (!location || !size || !style) {
-        alert('Vul alstublieft alle velden in met uw voorkeuren.');
+      const query = document.getElementById('fp-query').value.trim();
+      if (!query) {
+        alert('Vul alstublieft je voorkeuren in.');
         return;
       }
+      // Expecting the query in the format: "location, size, style"
+      const parts = query.split(',').map(part => part.trim().toLowerCase());
+      if (parts.length !== 3) {
+        alert('Voer alstublieft drie waarden in: locatie, grootte en stijl, gescheiden door komma\'s.');
+        return;
+      }
+      const [location, size, style] = parts;
       fetch(`${API_BASE}/find_plant`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ location, size, style })
       })
       .then(res => res.json())
-      .then(data => {
-        displayPlantResults(data);
-      })
+      .then(data => { displayPlantResults(data); })
       .catch(error => {
         console.error('Fout bij zoeken naar plant:', error);
         document.getElementById('find-plant-results').innerHTML = `<p>Fout bij zoeken naar plant.</p>`;
