@@ -12,6 +12,11 @@ from modules.orderstatus import router as orderstatus_router
 
 app = FastAPI()
 
+origins = [
+    "https://chatbottest-production.up.railway.app",  # VERY IMPORTANT
+]
+
+
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
