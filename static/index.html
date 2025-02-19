@@ -25,7 +25,9 @@
     }
     
     /* --- Global Reset & Base Font Size --- */
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     html, body {
       height: 100%;
       margin: 0;
@@ -54,7 +56,7 @@
       color: var(--border-color);
       padding: 20px;
       border-radius: 15px;
-      font-size: 1.2rem; /* Reduced font size */
+      font-size: 1.2rem;
       text-align: center;
       margin-bottom: 20px;
       box-shadow: 0 4px 8px var(--shadow);
@@ -127,8 +129,13 @@
     }
     .module-container h1,
     .module-container h2,
-    .module-container h3 { color: var(--border-color); }
-    .module-container p { white-space: normal; word-break: break-word; }
+    .module-container h3 {
+      color: var(--border-color);
+    }
+    .module-container p {
+      white-space: normal;
+      word-break: break-word;
+    }
     
     /* --- Footer --- */
     .chat-footer {
@@ -179,10 +186,9 @@
       outline: none;
       box-shadow: 0 0 10px var(--border-color);
     }
-    .module-container input[type="text"] {
-      display: inline-block;
-      width: fit-content;
-    }
+    
+    /* (Removed the old "display: inline-block; width: fit-content;" rule to avoid shrinking) */
+    
     .find-plant-form input[type="text"] {
       width: 400px;
     }
@@ -263,7 +269,9 @@
       flex-wrap: nowrap;
       justify-content: flex-start;
     }
-    .carousel-container::-webkit-scrollbar { height: 8px; }
+    .carousel-container::-webkit-scrollbar {
+      height: 8px;
+    }
     .carousel-container::-webkit-scrollbar-thumb {
       background: var(--border-color);
       border-radius: 4px;
@@ -279,10 +287,12 @@
       flex-direction: column;
       transition: transform 0.2s;
     }
-    .product-card:hover { transform: translateY(-4px); }
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
     .product-card img {
       width: 100%;
-      aspect-ratio: 2 / 3;
+      height: 330px; /* Height decreased by 30px from the original 360px */
       object-fit: cover;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
@@ -320,7 +330,10 @@
       gap: 15px;
       margin-bottom: 20px;
     }
-    .findplant-desc { margin-bottom: 15px; color: var(--border-color); }
+    .findplant-desc {
+      margin-bottom: 15px;
+      color: var(--border-color);
+    }
     /* --- Updated Find Perfect Plant View: Single Field --- */
     .find-plant-form.single-field input[type="text"] {
       width: 100%;
@@ -345,7 +358,9 @@
       text-align: center;
       padding-bottom: 10px;
     }
-    .plant-card:hover { transform: translateY(-4px); }
+    .plant-card:hover {
+      transform: translateY(-4px);
+    }
     .plant-card img {
       width: 100%;
       height: 150px;
@@ -353,11 +368,19 @@
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
-    .plant-info { padding: 10px; color: var(--border-color); }
-    .plant-info h3 { margin: 5px 0; font-size: 1.1rem; }
+    .plant-info {
+      padding: 10px;
+      color: var(--border-color);
+    }
+    .plant-info h3 {
+      margin: 5px 0;
+      font-size: 1.1rem;
+    }
     
+    /* --- Maintenance Input Field Update --- */
     .maintenance-input {
-      width: 300px;
+      width: 500px;
+      max-width: 100%;
       padding: 12px 15px;
       border: 2px solid var(--input-border);
       border-radius: 30px;
@@ -369,6 +392,79 @@
     .maintenance-input:focus {
       border-color: var(--input-border);
       outline: none;
+    }
+    
+    /* --- Responsive Media Queries --- */
+    @media (max-width: 1024px) {
+      #chat-launcher, .chat-container {
+        width: 90vw;
+        margin: 5vh auto;
+      }
+      .carousel-container {
+        gap: 10px;
+      }
+      .product-card {
+        width: 200px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      #chat-launcher, .chat-container {
+        width: 95vw;
+        margin: 2vh auto;
+      }
+      .chat-window {
+        padding: 10px;
+      }
+      .module-container {
+        width: 95%;
+        margin: 5px auto;
+      }
+      input[type="text"] {
+        font-size: 0.9rem;
+      }
+      .find-plant-form input[type="text"] {
+        width: 100%;
+      }
+      /* Make sure maintenance input also fits on smaller tablets */
+      .maintenance-input {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #chat-launcher, .chat-container {
+        width: 98vw;
+        margin: 0;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .chat-header, .chat-footer {
+        padding: 10px;
+      }
+      .launcher-message {
+        font-size: 1rem;
+        padding: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+      }
+      .product-card {
+        width: 90%;
+      }
+      .product-card img {
+        height: 250px;
+      }
+      .carousel-container {
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+      /* Maintenance input full width on mobile */
+      .maintenance-input {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -424,7 +520,7 @@
   
   <script>
     // API Base URL
-  const API_BASE = 'https://chatbottest-production.up.railway.app';
+    const API_BASE = 'https://chatbottest-production.up.railway.app';
 
     /* --- Helper Function to Format Maintenance Responses --- */
     function formatMaintenanceResponse(data) {
@@ -521,7 +617,6 @@
         </div>
         <div id="message"></div>
       `,
-      /* --- Updated Find Perfect Plant View: Single Field --- */
       findPlant: `
         <header>
           <h1>Vind de plant die bij jou past</h1>
@@ -551,7 +646,6 @@
           </div>
         </div>
         <div style="margin-bottom:20px;">
-          
           <h3 for="plant-maintenance-input">Heb je een andere vraag over onderhoud?</h3>
           <input type="text" id="plant-maintenance-input" class="maintenance-input" placeholder="Stel hier je vraag">
           <button id="get-plant-maintenance">Haal Onderhoudstip op</button>
@@ -719,7 +813,9 @@
     function showMessage(msg) {
       const msgDiv = document.getElementById('message');
       msgDiv.textContent = msg;
-      setTimeout(() => { msgDiv.textContent = ''; }, 3000);
+      setTimeout(() => {
+        msgDiv.textContent = '';
+      }, 3000);
     }
     
     /* --- Maintenance View Functions (UPDATED) --- */
@@ -783,7 +879,9 @@
         body: JSON.stringify({ location, size, style })
       })
       .then(res => res.json())
-      .then(data => { displayPlantResults(data); })
+      .then(data => {
+        displayPlantResults(data);
+      })
       .catch(error => {
         console.error('Fout bij zoeken naar plant:', error);
         document.getElementById('find-plant-results').innerHTML = `<p>Fout bij zoeken naar plant.</p>`;
