@@ -8,7 +8,7 @@ router = APIRouter()
 maintenance_tips = {
     "cleaning": "Gebruik een zachte doek of een plumeau om stof te verwijderen. Voor een grondigere reiniging, gebruik milde zeep en water.",
     "uv_protection": "Om vervaging te voorkomen, plaats kunstplanten in schaduwrijke gebieden of gebruik een UV-bestendige spray.",
-    "sustainability": "Onze planten zijn gemaakt van milieuvriendelijke materialen. Overweeg om oude planten te hergebruiken in plaats van ze weg te gooien."
+    "duurzaam": "Onze planten zijn gemaakt van milieuvriendelijke materialen. Overweeg om oude planten te hergebruiken in plaats van ze weg te gooien."
 }
 
 @router.get("/maintenance/{topic}")
@@ -21,7 +21,7 @@ def get_maintenance_tips(topic: str):
         }
     else:
         return {
-            "message": "Sorry, ik heb geen informatie over dit onderwerp. Probeer cleaning, uv_protection of sustainability."
+            "message": "Sorry, ik heb geen informatie over dit onderwerp. Probeer cleaning, uv_protection of duurzaam ."
         }
 
 @router.get("/maintenance/plant/{plant_name}")
