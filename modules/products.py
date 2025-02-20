@@ -4,9 +4,8 @@ import os
 
 router = APIRouter()
 
-# Base URL for serving images
-BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "http://127.0.0.1:8000/static/images/")
-
+# Updated Base URL for serving images on Railway production
+BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "https://chatbottest-production.up.railway.app/static/images/")
 
 # Updated product data with Dutch names, heights, and categories
 PRODUCTS = {
@@ -25,7 +24,7 @@ PRODUCTS = {
         {"id": 10, "name": "Strelitzia-kunstplant", "price": 34.99, "stock": 4, "image": "image10.png", "height": "120 cm"},
     ],
     "Outdoors": [
-        {"id": 11, "name": "Japanse-roos-kunstplant", "price": 44.99, "stock": 3, "image": "image10.ng", "height": "180 cm"},
+        {"id": 11, "name": "Japanse-roos-kunstplant", "price": 44.99, "stock": 3, "image": "image10.png", "height": "180 cm"},
         {"id": 12, "name": "Kunst-olijfboom", "price": 59.99, "stock": 3, "image": "image3.png", "height": "120 cm"},
         {"id": 13, "name": "Kunstplant-eucalyptus", "price": 29.99, "stock": 6, "image": "image1.png", "height": "180 cm"},
         {"id": 14, "name": "Kunst-bananenplant", "price": 39.99, "stock": 2, "image": "image6.png", "height": "120 cm"},
