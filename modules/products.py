@@ -5,7 +5,8 @@ import os
 router = APIRouter()
 
 # Base URL for serving images
-BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "http://127.0.0.1:8000/static/images/")
+BASE_IMAGE_URL = os.getenv("BASE_IMAGE_URL", "https://chatbottest-production.up.railway.app/static/images/")
+
 
 
 # Updated product data with Dutch names, heights, and categories
